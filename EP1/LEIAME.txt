@@ -1,0 +1,72 @@
+EP1 - MAC0438 - Programação Concorrente
+Alunos: 
+Helena Almeida Victoretti - 7991124
+Vinicius Vendramini - 7991103
+
+
+Os códigos fontes desse ep consistem em: ep1.c, ep1.h, pista.c, pista.h, 
+thread.c e thread.h, além de um arquivo Makefile.
+
+Para criar o programa executável basta utilizar o comando make no terminal.
+
+Para executar o programa a entrada deverá ser:
+	d n [v|u] [b]
+
+onde d é a quantidade de metros da pista e n o número de ciclista. O v deve 
+ser usado para definir simulações com velocidades aleatórias a cada volta. 
+O u deve ser usado para definir simulações com velocidades uniformes de 
+50Km/h. Se nenhum dos dois (v ou u) for informado, por padrão será executado 
+com velocidades aleatórias. O b indica se é para ser execuatado com a opção 
+de debug. Se não for indicado por padrão será executado sem a opção de debug.
+
+A saída do programa consiste em:
+	1) A cada duas volta imprime-se na tela:
+		"O ciclista x foi eliminado na volta y.
+		 Os ciclistas extamente a frente deste sao w e z."
+	  Onde x, w e z são os identificadores dos ciclista e y a volta em 
+	  questão. (w é o penúltimo ciclista e z é o anti-penúltimo 
+	  ciclista).
+	  
+	2) Ao final do programa imprime-se na tela:
+		"A classificacao final eh:
+		 O ciclista   x ficou em   1o lugar - medalha de ouro.
+		 O ciclista   y ficou em   2o lugar - medalha de prata.
+		 O ciclista   z ficou em   3o lugar - medalha de bronze.
+		 O ciclista   w ficou em   4o lugar.
+		 O ciclista   t ficou em   5o lugar.
+		 O ciclista   r ficou em   6o lugar.
+	 	..."
+	    E assim por diante até terem sido impressas as classificações de
+	    todos os ciclistas.
+	    Se um ciclista quebrou, este fato é indicado:
+		"O ciclista   x ficou em   Yo lugar - quebrado."
+		
+	3) Se em uma volta um ciclista quebra, imprime-se na tela:
+		"O ciclista x quebrou na volta y. Sua posicao na pista era p."
+
+
+Observação sobre a implementação do programa:
+
+	1) Se um ciclista quebra, sua classificação final vai ser maior que a
+	dos ciclistas que foram eliminados (sem quebra ou com quebra) antes
+	dele, pois este completou mais voltas na pista.
+	
+	2) Como no enunciado estava ambíguo, na descrição da corrida, entende-se
+	que os ciclistas devem ser eliminados a cada duas voltas. Porém, na 
+	descrição dos detalhes do código, entende-se que os ciclistas devem ser
+	eliminados a cada volta.
+	Decidimos, então, eliminar o ciclista a cada duas voltas na pista.
+	
+	3) Para implementar a opção de debug recebemos como parâmetro de 
+	entrada se é para executar com a opção debug ou sem ela. Não modificando
+	a ordem definida no enunciado sobre os argumentos de entrada, apenas
+	acrescenta-se mais um argumento opcional.
+	
+	4) Os 14 segundos contados para a impressão do debug foram contados
+	com base no tempo da simulação, não no tempo real - ou seja, considerando
+	que cada volta leva 72ms para executar. Assim, o debug é impresso pelo
+	menos uma vez a cada volta, o que facilita a depuração.
+
+
+
+
