@@ -1,2 +1,0 @@
-# Concorrentes
-EPs de Concorrentes
