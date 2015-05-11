@@ -2,6 +2,8 @@
 #ifndef __EP2__cosine__
 #define __EP2__cosine__
 
-double cosine(double x, double error);
+#include "gmpxx.h"
+
+mpf_class cosine(mpf_class x, mpf_class error);
 
 #endif /* defined(__EP2__cosine__) */

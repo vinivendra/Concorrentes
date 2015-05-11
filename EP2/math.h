@@ -2,10 +2,12 @@
 #ifndef __EP2__factorial__
 #define __EP2__factorial__
 
-void initializeFactorial();
-double factorial(unsigned long x);
+#include "gmpxx.h"
 
-void initializePower(double x);
-double power(unsigned long x);
+void initializeFactorial();
+mpf_class factorial(unsigned long x);
+
+void initializePower(mpf_class x);
+mpf_class power(unsigned long x);
 
 #endif /* defined(__EP2__factorial__) */

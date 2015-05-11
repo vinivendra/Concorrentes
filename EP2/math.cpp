@@ -10,7 +10,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 // Factorial
 
-vector<double> factorialTable;
+vector<mpf_class> factorialTable;
 
 
 void initializeFactorial() {
@@ -19,7 +19,7 @@ void initializeFactorial() {
 }
 
 
-double factorial(unsigned long x) {
+mpf_class factorial(unsigned long x) {
 
     if (x >= factorialTable.size()) {
         factorialTable.push_back(factorial(x - 1) * x);
@@ -31,18 +31,18 @@ double factorial(unsigned long x) {
 ////////////////////////////////////////////////////////////////////////////////
 // Power
 
-vector<double> powerTable;
-double powerBase = 0;
+vector<mpf_class> powerTable;
+mpf_class powerBase = 0;
 
 
-void initializePower(double x) {
+void initializePower(mpf_class x) {
     powerBase = x;
     powerTable.clear();
     powerTable.push_back(1.0);
 }
 
 
-double power(unsigned long x) {
+mpf_class power(unsigned long x) {
 
     if (x >= powerTable.size()) {
         powerTable.push_back(power(x - 1) * powerBase);
