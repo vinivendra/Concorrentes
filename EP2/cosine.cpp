@@ -20,15 +20,22 @@ mpf_class cosine(mpf_class x, mpf_class error) {
     initializeFactorial();
     initializePower(x);
 
+    bool flag = 0;
+
     for (unsigned int n = 0; abs(term) >= error; n++) {
 
         sign *= -1;
-        numerator = power(2 * n);
-        denominator = factorial(0);
+        numerator = power(flag);
+        denominator = factorial(flag);
         term = sign * numerator / denominator;
         cosine += term;
 
-        updateFactorials();
+        if (flag) {
+            updateFactorials();
+            updatePowers();
+        }
+
+        flag = !flag;
     }
 
     return cosine;
