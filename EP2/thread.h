@@ -3,7 +3,10 @@
 #ifndef __EP2__thread__
 #define __EP2__thread__
 
-void initializeSemaphores(unsigned long n);
+unsigned long getQ();
+void setQ(unsigned long newValue);
+
+void initializeSemaphores();
 void initializeThreads();
 void joinThreads();
 

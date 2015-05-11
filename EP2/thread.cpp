@@ -11,6 +11,7 @@
 using namespace std;
 
 
+unsigned long q = 1;
 vector<pthread_t> threads;
 pthread_barrier_t barrier;
 
@@ -18,7 +19,14 @@ void *threadFunction(void *id);
 void initializeBarrier();
 
 
-unsigned long q = 0;
+unsigned long getQ() {
+    return q;
+}
+
+void setQ(unsigned long newValue) {
+    q = newValue;
+}
+
 
 
 void initializeThreads() {
@@ -38,9 +46,7 @@ void initializeThreads() {
 }
 
 
-void initializeSemaphores(unsigned long n) {
-    q = n;
-
+void initializeSemaphores() {
     pthread_barrier_init(&barrier, NULL, (unsigned int)q);
 }
 

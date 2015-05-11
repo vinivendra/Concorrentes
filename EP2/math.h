@@ -5,6 +5,7 @@
 #include "gmpxx.h"
 
 void initializeFactorial();
+void updateFactorials();
 mpf_class factorial(unsigned long x);
 
 void initializePower(mpf_class x);
