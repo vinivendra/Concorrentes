@@ -14,30 +14,30 @@ using namespace std;
 // Factorial
 
 vector<mpf_class> factorialTable;
-unsigned long x = 0;
+unsigned long n = 0;
 
 
 void initializeFactorial() {
     factorialTable.clear();
     factorialTable.push_back(1.0);
 
-    x = 0;
+    n = 0;
 
     for (unsigned long i = 1; i < getQ(); i++) {
-        factorialTable.push_back(factorialTable[i - 1] * (x + 1) * (x + 2));
-        x += 2;
+        factorialTable.push_back(factorialTable[i - 1] * (n + 1) * (n + 2));
+        n += 2;
     }
 }
 
 
 void updateFactorials() {
 
-    factorialTable[0] = factorialTable[getQ() - 1] * (x + 1) * (x + 2);
-    x += 2;
+    factorialTable[0] = factorialTable[getQ() - 1] * (n + 1) * (n + 2);
+    n += 2;
 
     for (unsigned long i = 1; i < getQ(); i++) {
-        factorialTable[i] = factorialTable[i - 1] * (x + 1) * (x + 2);
-        x += 2;
+        factorialTable[i] = factorialTable[i - 1] * (n + 1) * (n + 2);
+        n += 2;
     }
 }
 
@@ -53,8 +53,8 @@ vector<mpf_class> powerTable;
 mpf_class powerBaseSquared = 0;
 
 
-void initializePower(mpf_class x) {
-    powerBaseSquared = x * x;
+void initializePower(mpf_class n) {
+    powerBaseSquared = n * n;
     powerTable.clear();
     powerTable.push_back(1.0);
 
