@@ -4,13 +4,15 @@
 #define __EP2__thread__
 
 #include "gmpxx.h"
+#include <vector>
+#include <mutex>
 
 unsigned long getQ();
 void setQ(unsigned long newValue);
-mpf_class getX();
-void setX(mpf_class newValue);
-mpf_class getError();
-void setError(mpf_class newValue);
+double getX();
+void setX(double newValue);
+double getError();
+void setError(double newValue);
 
 void initializeSemaphores();
 void initializeThreads();
