@@ -34,12 +34,15 @@ bool goRound;
 bool done;
 
 mutex *cosineMutex;
+mutex *printArrivalMutex;
 
+bool isFirstArrival = true;
+bool shouldprintArrival = false;
 unsigned long numberOfRounds;
 
 void *threadFunction(void *id);
 void initializeBarrier();
-
+void printArrival(unsigned long i);
 
 unsigned long getQ() {
     return q;
@@ -65,6 +68,10 @@ void setError(double newValue) {
     error = newValue;
 }
 
+void setShouldprintArrival(bool newValue) {
+    shouldprintArrival = newValue;
+}
+
 void initializeThreads() {
     threads.clear();
 
@@ -77,6 +84,8 @@ void initializeThreads() {
     goReady = true;
 
     done = false;
+
+    isFirstArrival = true;
 
     for (unsigned long i = 0; i < q; i++) {
         terms.push_back(0.0);
@@ -101,6 +110,7 @@ void initializeSemaphores() {
     }
 
     cosineMutex = new mutex();
+    printArrivalMutex = new mutex();
 }
 
 
@@ -130,10 +140,18 @@ void *threadFunction(void *id) {
 
         if (i == q - 1) {
 
+            printArrival(i);
+
             for (unsigned long i = 0; i < q - 1; i++)
                 arrive[i]->lock();
 
             updateMath();
+
+            if (shouldprintArrival) {
+                isFirstArrival = true;
+                cout << "\n";
+            }
+
 
             cout << "cosine: " << cosine << "\n";
 
@@ -146,6 +164,9 @@ void *threadFunction(void *id) {
 
         } else {
             unique_lock<mutex> lock(goMutex);
+
+            printArrival(i);
+
             if (goRound) {
                 arrive[i]->unlock();
                 goCV.wait(lock, []{return !goReady;});
@@ -167,6 +188,16 @@ void *threadFunction(void *id) {
     return 0;
 }
 
+void printArrival(unsigned long i) {
+    printArrivalMutex->lock();
+    if (isFirstArrival) {
+        isFirstArrival = false;
+        cout << "Ordem de chegada das threads: ";
+    }
+
+    cout << i << " ";
+    printArrivalMutex->unlock();
+}
 
 void joinThreads() {
     for (unsigned long i = 0; i < q; i++) {

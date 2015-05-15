@@ -13,6 +13,7 @@ double getX();
 void setX(double newValue);
 double getError();
 void setError(double newValue);
+void setShouldprintArrival(bool newValue);
 
 void initializeSemaphores();
 void initializeThreads();
