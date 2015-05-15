@@ -9,7 +9,7 @@
 
 using namespace std;
 
-// TODO: Implementar o modo de comparar valores consecutivos do cosseno.
+// TODO: Printing cossine every turn should be conditional
 
 // TODO: Colocar a biblioteca de números grandes
 
@@ -20,17 +20,18 @@ int main(int argc, const char *argv[]) {
     unsigned long precision = 300; // FIXME: 700000
     mpf_set_default_prec(precision);
 
-    setQ(1);
-    setX(M_PI / 3);
+    setQ(2);
+    setX(M_PI / 6);
     setError(0.000000001); // FIXME: pow(1/2, precision)
-    setShouldprintArrival(true);
-
+    setshouldPrintArrival(true);
+    setShouldCompareTerms(true);
+    setShouldPrintCosine(false);
 
     initializeSemaphores();
     initializeEnvironment();
-//    startThreads();
-//    joinThreads();
-    threadFunction((void *)0);
+    startThreads();
+    joinThreads();
+//    threadFunction((void *)0);
     printInformation();
 
     return 0;

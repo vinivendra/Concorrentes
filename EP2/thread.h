@@ -13,7 +13,9 @@ double getX();
 void setX(double newValue);
 double getError();
 void setError(double newValue);
-void setShouldprintArrival(bool newValue);
+void setshouldPrintArrival(bool newValue);
+void setShouldCompareTerms(bool newValue);
+void setShouldPrintCosine(bool newValue);
 
 void initializeSemaphores();
 void initializeEnvironment();

@@ -37,7 +37,9 @@ mutex *cosineMutex;
 mutex *printArrivalMutex;
 
 bool isFirstArrival = true;
-bool shouldprintArrival = false;
+bool shouldPrintArrival = false;
+bool shouldCompareTerms = false;
+bool shouldPrintCosine = false;
 unsigned long numberOfRounds;
 
 void *threadFunction(void *id);
@@ -67,14 +69,22 @@ void setError(double newValue) {
     error = newValue;
 }
 
-void setShouldprintArrival(bool newValue) {
-    shouldprintArrival = newValue;
+void setshouldPrintArrival(bool newValue) {
+    shouldPrintArrival = newValue;
+}
+
+void setShouldCompareTerms(bool newValue) {
+    shouldCompareTerms = newValue;
+}
+
+void setShouldPrintCosine(bool newValue) {
+    shouldPrintCosine = newValue;
 }
 
 void initializeEnvironment() {
     threads.clear();
 
-    initializeMathWithPowerBase(M_PI / 3);
+    initializeMathWithPowerBase(x);
 
     terms.clear();
     for (unsigned long i = 0; i < q; i++)
@@ -124,6 +134,8 @@ void *threadFunction(void *id) {
     double numerator;
     double denominator;
 
+    double lastCosine = 0;
+
     unsigned long n;
 
     for (n = i; true; n += q) {
@@ -133,7 +145,7 @@ void *threadFunction(void *id) {
         denominator = factorial(i);
         terms[i] = sign * numerator / denominator;
 
-        if (abs(terms[i]) < error)
+        if (!shouldCompareTerms && abs(terms[i]) < error)
             done = true;
 
         cosineMutex->lock();
@@ -149,13 +161,21 @@ void *threadFunction(void *id) {
 
             updateMath();
 
-            if (shouldprintArrival) {
+            if (shouldPrintArrival) {
                 isFirstArrival = true;
                 cout << "\n";
             }
 
-            cout << "cosine: " << cosine << "\n"; // TODO: This should be
-                                                  // conditional
+            if (shouldCompareTerms) {
+                if (abs(cosine - lastCosine) < error)
+                    done = true;
+
+                lastCosine = cosine;
+            }
+
+            if (shouldPrintCosine) {
+                cout << "cosine: " << cosine << "\n";
+            }
 
             goRound = !goRound;
             goReady = goRound;
