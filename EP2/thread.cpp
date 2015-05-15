@@ -41,7 +41,6 @@ bool shouldprintArrival = false;
 unsigned long numberOfRounds;
 
 void *threadFunction(void *id);
-void initializeBarrier();
 void printArrival(unsigned long i);
 
 unsigned long getQ() {
@@ -72,12 +71,15 @@ void setShouldprintArrival(bool newValue) {
     shouldprintArrival = newValue;
 }
 
-void initializeThreads() {
+void initializeEnvironment() {
     threads.clear();
 
     initializeMathWithPowerBase(M_PI / 3);
 
     terms.clear();
+    for (unsigned long i = 0; i < q; i++)
+        terms.push_back(0.0);
+
     cosine = 0;
 
     goRound = true;
@@ -86,10 +88,10 @@ void initializeThreads() {
     done = false;
 
     isFirstArrival = true;
+}
 
+void startThreads() {
     for (unsigned long i = 0; i < q; i++) {
-        terms.push_back(0.0);
-
         pthread_t thread;
 
         if (pthread_create(&thread, nullptr, threadFunction, (void *)i))
@@ -152,8 +154,8 @@ void *threadFunction(void *id) {
                 cout << "\n";
             }
 
-
-            cout << "cosine: " << cosine << "\n";
+            cout << "cosine: " << cosine << "\n"; // TODO: This should be
+                                                  // conditional
 
             goRound = !goRound;
             goReady = goRound;
@@ -169,11 +171,10 @@ void *threadFunction(void *id) {
 
             if (goRound) {
                 arrive[i]->unlock();
-                goCV.wait(lock, []{return !goReady;});
-            }
-            else {
+                goCV.wait(lock, [] { return !goReady; });
+            } else {
                 arrive[i]->unlock();
-                goCV.wait(lock, []{return goReady;});
+                goCV.wait(lock, [] { return goReady; });
             }
 
             if (done)

@@ -16,7 +16,9 @@ void setError(double newValue);
 void setShouldprintArrival(bool newValue);
 
 void initializeSemaphores();
-void initializeThreads();
+void initializeEnvironment();
+void startThreads();
+void *threadFunction(void *id);
 void joinThreads();
 void printInformation();
 
