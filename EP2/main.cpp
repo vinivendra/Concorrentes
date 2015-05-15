@@ -9,7 +9,6 @@
 
 using namespace std;
 
-// TODO: Contar o numero de rodadas
 // TODO: Implementar o modo de comparar valores consecutivos do cosseno.
 // TODO: Marcar a ordem em que as threads chegaram na barreira
 // TODO: Modo sequencial
@@ -30,6 +29,7 @@ int main(int argc, const char *argv[]) {
     initializeSemaphores();
     initializeThreads();
     joinThreads();
+    printInformation();
 
     return 0;
 }

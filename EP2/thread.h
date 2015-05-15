@@ -17,5 +17,6 @@ void setError(double newValue);
 void initializeSemaphores();
 void initializeThreads();
 void joinThreads();
+void printInformation();
 
 #endif /* defined(__EP2__thread__) */

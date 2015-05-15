@@ -35,6 +35,8 @@ bool done;
 
 mutex *cosineMutex;
 
+unsigned long numberOfRounds;
+
 void *threadFunction(void *id);
 void initializeBarrier();
 
@@ -110,8 +112,9 @@ void *threadFunction(void *id) {
     double numerator;
     double denominator;
 
+    unsigned long n;
 
-    for (unsigned long n = i; true; n += q) {
+    for (n = i; true; n += q) {
         sign = (!(n % 2)) * 2 - 1;
 
         numerator = power(i);
@@ -157,6 +160,10 @@ void *threadFunction(void *id) {
         }
     }
 
+    if (i == q - 1) {
+        numberOfRounds = n + 1;
+    }
+
     return 0;
 }
 
@@ -165,4 +172,12 @@ void joinThreads() {
     for (unsigned long i = 0; i < q; i++) {
         pthread_join(threads[i], NULL);
     }
+}
+
+void printInformation() {
+    cout << "=========== Results ==========\n";
+
+    cout << "Cosine = " << cosine << "\n";
+
+    cout << "Number of rounds = " << numberOfRounds << "\n";
 }
