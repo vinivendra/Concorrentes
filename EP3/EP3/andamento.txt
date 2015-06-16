@@ -20,7 +20,14 @@ Obs:
 
 ================================================================================
 
-v2.0
+MODIFICAÇÕES:
+Implementei um outro pseudo_codigo do monitor: que tenta pegar os dois garfos de uma vez.
+Mudei de <conditional_variable> e <mutex> para pthread_cont e pthread_mutex.
+Está funcionando, para o uniforme, os filosofos comem porcoes parecidas de comida, mas verificar r ainda não está funcionando muito bem. Eles comem mais que r porções. Tentei destruir as threads, mas fica semáforo preso.
+
+================================================================================
+
+Versão do Daniel:
 
 - Uma fila por garfo
 - Cada filósofo tenta pegar os dois garfos. Se não conseguir um deles, solta os

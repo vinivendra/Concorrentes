@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <mutex>
+#include <unistd.h>
 
 #include "thread.h"
 #include "monitor.h"
@@ -15,10 +16,11 @@ vector<int> pesos;
 int r; // quantidade de porcoes
 int porcoesFaltando;
 mutex comeMutex;
-bool deve_ser_uniforme; // se true os filosofos comem porcoes uniformes, se false
-						// os filosofos comem porcoes proporcionais a seu peso.
+bool deve_ser_uniforme; // se true os filosofos comem porcoes uniformes, se
+                        // false
+                        // os filosofos comem porcoes proporcionais a seu peso.
 vector<Garfo *> garfos;
-
+mutex printMutex;
 
 void *filosofo(void *id);
 void come();
@@ -30,16 +32,16 @@ void set_n(int novo) {
 }
 
 void set_peso(int peso) {
-	pesos.push_back(peso);
+    pesos.push_back(peso);
 }
 
 void set_porcoes(int p) {
-	r = p;
+    r = p;
     porcoesFaltando = p;
 }
 
 void set_deve_ser_uniforme(bool u) {
-	deve_ser_uniforme = u;
+    deve_ser_uniforme = u;
 }
 
 void cria_threads() {
@@ -47,7 +49,7 @@ void cria_threads() {
     garfos.clear();
     filosofos.clear();
 
-	for (long int i = 0; i < n; i++) {
+    for (long int i = 0; i < n; i++) {
         pthread_t f;
 
         if (pthread_create(&f, nullptr, filosofo, (void *)i))
@@ -70,7 +72,7 @@ void *filosofo(void *id) {
     long int i = (long int)id;
 
     Garfo *garfo_da_esquerda = garfos[i];
-    Garfo *garfo_da_direita = garfos[(i+1)%n];
+    Garfo *garfo_da_direita = garfos[(i + 1) % n];
 
     bool acabou = false;
 
@@ -81,20 +83,44 @@ void *filosofo(void *id) {
         while (true) {
             garfo_da_esquerda->pega();
 
+            printMutex.lock();
+            cout << id << ": pega o " << i << "\n";
+            printMutex.unlock();
+
             if (garfo_da_direita->tenta()) {
+                printMutex.lock();
+                cout << id << ": pega o " << (i + 1) % n << "\n";
+                printMutex.unlock();
+
                 come();
 
-                if (porcoesFaltando == 0) {
+                printMutex.lock();
+                cout << id << ": come "
+                     << "\n";
+                cout << id << ": faltam " << porcoesFaltando << "\n";
+                printMutex.unlock();
+
+                if (porcoesFaltando <= 0) {
                     acabou = true;
+
+                    printMutex.lock();
+                    cout << id << ": acabou "
+                         << "\n";
+                    printMutex.unlock();
                 }
 
                 break;
-            }
-            else {
+            } else {
+                printMutex.lock();
+                cout << id << ": não rolou; devolve o " << (i + 1) % n << "\n";
+                printMutex.unlock();
+
+                // TODO: Dorme um pouquinho aleatoriamente, para evitar a
+                // sincronia.
+
                 garfo_da_esquerda->devolve();
             }
         }
-
     }
 
     return NULL;
@@ -110,7 +136,8 @@ void come() {
 }
 
 void pensa() {
-    // sleep(random)
+    // TODO: fazer o pensa() dormir aleatorio
+    sleep(1);
 }
 
 /*
@@ -120,7 +147,7 @@ void pensa() {
 
     while true
         garfo_da_esquerda.pega()
-        
+
         if garfo_da_direita.tenta()
             come()
             break
