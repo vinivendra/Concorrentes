@@ -1,0 +1,19 @@
+main.cpp:
+	Obtem os dados da entrada.
+	
+thread.cpp:
+	Funções para obter os parametros (número de filosofos, pesos, rodar no modo uniforme ou proporcional aos pesos).
+	Funções para criar e juntar as threads.
+	
+monitor.cpp:
+	Implementar o monitor (baseada no pseudo-codigo). 
+		Utilizar <mutex> e <conditional_variable>.
+			Só um problema: notify_one não é FIFO!
+			
+			
+Obs:
+	Quem controla a quantidade de porções comidas, o monitor ou as threads?
+		Acho que tem que ser o monitor.
+	Como colocar os pesos no pseudo-codigo do monitor?
+		Acho que se colocar um wait(f, peso) (wait com prioridade funciona).
+
