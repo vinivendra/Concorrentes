@@ -1,0 +1,35 @@
+main.cpp:
+	Obtem os dados da entrada.
+	
+thread.cpp:
+	Funções para obter os parametros (número de filosofos, pesos, rodar no modo
+    uniforme ou proporcional aos pesos).
+	Funções para criar e juntar as threads.
+	
+monitor.cpp:
+	Implementar o monitor (baseada no pseudo-codigo). 
+		Utilizar <mutex> e <conditional_variable>.
+			Só um problema: notify_one não é FIFO!
+			
+			
+Obs:
+	Quem controla a quantidade de porções comidas, o monitor ou as threads?
+		Acho que tem que ser o monitor.
+	Como colocar os pesos no pseudo-codigo do monitor?
+		Acho que se colocar um wait(f, peso) (wait com prioridade funciona).
+
+================================================================================
+
+v2.0
+
+- Uma fila por garfo
+- Cada filósofo tenta pegar os dois garfos. Se não conseguir um deles, solta os
+  dois.
+- Os garfos são os monitores. Eles só deixam um dos dois filósofos acessar por
+  vez.
+- Cada filósofo pode acessar um garfo, soltar um garfo e "tentar" acessar um
+  garfo.
+- Sabemos quantas porções existem, então sabemos o máximo que cada filósofo pode
+  comer (proporcionalmente ao seu peso). Se algum filósofo comer demais, ele
+  para de comer. Assim, garantimos que no final cada filósofo comeu
+  proporcionalmente ao seu peso.
