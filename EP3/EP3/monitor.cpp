@@ -7,56 +7,62 @@ void signal(variavel_condicional *cv);
 bool busy(variavel_condicional *cv);
 
 
-void Garfo::pega() {
-    cv.m.lock();
-    wait(&cv);
-    cv.m.unlock();
+Garfo::Garfo() {
+    this->cv.m = new mutex();
+    this->cv.privateMutex = new mutex();
+    this->cv.busy = 0;
 }
+
+
+void Garfo::pega() {
+    cv.m->lock();
+    wait(&cv);
+    cv.m->unlock();
+}
+
 
 void Garfo::devolve() {
-    cv.m.lock();
+    cv.m->lock();
     signal(&cv);
-    cv.m.unlock();
+    cv.m->unlock();
 }
 
+
 bool Garfo::tenta() {
-    cv.m.lock();
+    cv.m->lock();
 
     if (busy(&cv)) {
-        cv.m.unlock();
+        cv.m->unlock();
         return false;
     }
 
     wait(&cv);
-    cv.m.unlock();
+    cv.m->unlock();
     return true;
 }
 
 
 void wait(variavel_condicional *cv) {
 
-    cv->m.unlock();
+    cv->busy++;
+    cv->m->unlock();
 
-    cv->busyMutex.lock();
-    cv->privateMutex.lock();
-    cv->busy = true;
-    cv->busyMutex.unlock();
+    cv->privateMutex->lock();
 
-    cv->m.lock();
+    cv->m->lock();
 }
+
 
 void signal(variavel_condicional *cv) {
 
-    cv->busy = false;
-    cv->privateMutex.unlock();
+    cv->busy--;
+    cv->privateMutex->unlock();
 }
 
-bool busy(variavel_condicional *cv) {
-    cv->busyMutex.lock();
-    bool result = cv->busy;
-    cv->busyMutex.unlock();
 
-    return result;
+bool busy(variavel_condicional *cv) {
+
+    return cv->busy;
 }
 
 /* Pseudo código do monitor sem levar em considereção os pesos dos filosofos:
@@ -72,68 +78,68 @@ monitor Garfo {
     variavel_condicional cv
     bool ocupado = false
 
-	procedure pega() {
-        m.lock()
+    procedure pega() {
+        m->lock()
         wait(cv)
-        m.unlock()
-	}
+        m->unlock()
+    }
 
-	procedure devolve() {
-        m.lock()
+    procedure devolve() {
+        m->lock()
         signal(cv)
-        m.unlock()
-	}
- 
+        m->unlock()
+    }
+
     procedure tenta() {
-        m.lock()
+        m->lock()
 
         if busy(cv)
-            m.unlock()
+            m->unlock()
             return 0
 
         wait(cv)
-        m.unlock()
+        m->unlock()
     }
 }
- 
- 
+
+
 busy(cv)
-    busyMutex.lock()
+    busyMutex->lock()
     bool result = cv.busy
-    busyMutex.unlock()
-    
+    busyMutex->unlock()
+
     return result
- 
+
 
 wait(cv)
 
-    cv.m.unlock()
+    cv.m->unlock()
 
-        busyMutex.lock()
+        busyMutex->lock()
             cv.private.lock()
             cv.busy = true
-        busyMutex.unlock()
+        busyMutex->unlock()
 
-    cv.m.lock()
+    cv.m->lock()
 
 
 signal(cv)
 
     cv.busy = false
     cv.private.unlock()
- 
- 
- 
+
+
+
 while true
     pensa()
 
     while true
         garfo_da_esquerda.pega()
-        
+
         if garfo_da_direita.tenta()
             come()
             break
         else
             garfo_da_esquerda.devolve()
 
-*/ 
+*/

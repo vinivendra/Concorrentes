@@ -10,10 +10,9 @@ using namespace std;
 
 
 typedef struct variavel_condicional {
-    mutex privateMutex;
-    bool busy;
-    mutex busyMutex;
-    mutex m;
+    int busy;
+    mutex *privateMutex;
+    mutex *m;
 } variavel_condicional;
 
 
@@ -22,6 +21,8 @@ class Garfo {
     bool ocupado = false;
 
 public:
+    Garfo();
+
     void pega();
     void devolve();
     bool tenta();

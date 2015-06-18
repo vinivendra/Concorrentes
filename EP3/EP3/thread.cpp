@@ -11,6 +11,7 @@
 using namespace std;
 
 vector<pthread_t> filosofos;
+vector<int> porcoes;
 int n; // quantidade de filosofos
 vector<int> pesos;
 int r; // quantidade de porcoes
@@ -19,11 +20,11 @@ mutex comeMutex;
 bool deve_ser_uniforme; // se true os filosofos comem porcoes uniformes, se
                         // false
                         // os filosofos comem porcoes proporcionais a seu peso.
-vector<Garfo *> garfos;
+Garfo *garfos;
 mutex printMutex;
 
 void *filosofo(void *id);
-void come();
+void come(long int i);
 void pensa();
 
 
@@ -44,10 +45,12 @@ void set_deve_ser_uniforme(bool u) {
     deve_ser_uniforme = u;
 }
 
+
 void cria_threads() {
 
-    garfos.clear();
+    garfos = (Garfo *)malloc(sizeof(Garfo) * n);
     filosofos.clear();
+    porcoes.clear();
 
     for (long int i = 0; i < n; i++) {
         pthread_t f;
@@ -56,13 +59,19 @@ void cria_threads() {
             printf("\n ERROR creating thread %ld\n", i + 1);
 
         filosofos.push_back(f);
-        garfos.push_back(new Garfo());
+        porcoes.push_back(0);
+        garfos[i] = Garfo();
     }
 }
+
 
 void junta_threads() {
     for (int i = 0; i < n; i++) {
         pthread_join(filosofos[i], NULL);
+    }
+
+    for (int i = 0; i < n; i++) {
+        printf("O filosofo %d comeu %d porções.\n", i, porcoes[i]);
     }
 }
 
@@ -71,8 +80,16 @@ void *filosofo(void *id) {
 
     long int i = (long int)id;
 
-    Garfo *garfo_da_esquerda = garfos[i];
-    Garfo *garfo_da_direita = garfos[(i + 1) % n];
+    Garfo primeiro_garfo;
+    Garfo segundo_garfo;
+
+    if (i % 2) {
+        primeiro_garfo = garfos[i];
+        segundo_garfo = garfos[(i + 1) % n];
+    } else {
+        primeiro_garfo = garfos[(i + 1) % n];
+        segundo_garfo = garfos[i];
+    }
 
     bool acabou = false;
 
@@ -80,19 +97,23 @@ void *filosofo(void *id) {
     while (!acabou) {
         pensa();
 
+        printMutex.lock();
+        cout << id << ": pensa\n";
+        printMutex.unlock();
+
         while (true) {
-            garfo_da_esquerda->pega();
+            primeiro_garfo.pega();
 
             printMutex.lock();
             cout << id << ": pega o " << i << "\n";
             printMutex.unlock();
 
-            if (garfo_da_direita->tenta()) {
+            if (segundo_garfo.tenta()) {
                 printMutex.lock();
                 cout << id << ": pega o " << (i + 1) % n << "\n";
                 printMutex.unlock();
 
-                come();
+                come(i);
 
                 printMutex.lock();
                 cout << id << ": come "
@@ -109,16 +130,16 @@ void *filosofo(void *id) {
                     printMutex.unlock();
                 }
 
+                primeiro_garfo.devolve();
+                segundo_garfo.devolve();
+
                 break;
             } else {
                 printMutex.lock();
                 cout << id << ": não rolou; devolve o " << (i + 1) % n << "\n";
                 printMutex.unlock();
 
-                // TODO: Dorme um pouquinho aleatoriamente, para evitar a
-                // sincronia.
-
-                garfo_da_esquerda->devolve();
+                primeiro_garfo.devolve();
             }
         }
     }
@@ -127,31 +148,26 @@ void *filosofo(void *id) {
 }
 
 
-void come() {
+void come(long int i) {
     comeMutex.lock();
     if (porcoesFaltando > 0) {
         porcoesFaltando--;
+        porcoes[i]++;
     }
     comeMutex.unlock();
 }
 
 void pensa() {
-    // TODO: fazer o pensa() dormir aleatorio
-    sleep(1);
+    float mediaEmSegundos = 0.1;
+    float variacaoEmSegundos = 0.05;
+
+    float mediaEmMicrossegundos = mediaEmSegundos * 1000000;
+    float variacaoEmMicrossegundos = variacaoEmSegundos * 1000000;
+
+    float random = (float)rand() / RAND_MAX;
+    float microssegundos = (random * mediaEmMicrossegundos)
+                           + (mediaEmMicrossegundos - variacaoEmMicrossegundos);
+    unsigned int tempo = microssegundos;
+
+    usleep(tempo);
 }
-
-/*
-
- while true
-    pensa()
-
-    while true
-        garfo_da_esquerda.pega()
-
-        if garfo_da_direita.tenta()
-            come()
-            break
-        else
-            garfo_da_esquerda.devolve()
-
-*/
