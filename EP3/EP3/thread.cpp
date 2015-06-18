@@ -14,6 +14,7 @@ using namespace std;
 vector<pthread_t> filosofos;
 vector<int> porcoes;
 vector<int> pesos;
+vector<int> maximoPorcoes;
 Garfo *garfos;
 
 int n;                  // quantidade de filosofos
@@ -54,15 +55,38 @@ void set_deve_ser_uniforme(bool u) {
 
 void cria_threads() {
 
+    int totalMaximoPorcoes = 0;
+
     garfos = (Garfo *)malloc(sizeof(Garfo) * n);
     filosofos.clear();
     porcoes.clear();
     totalPesos = 0;
 
+    bool *porcoesCertas = (bool *)malloc(sizeof(bool));
+
     for (long int i = 0; i < n; i++) {
         porcoes.push_back(0);
         garfos[i] = Garfo();
         totalPesos += pesos[i];
+    }
+
+    for (long int i = 0; i < n; i++) {
+        porcoesCertas[i] = false;
+
+        float pesoRelativo = (float)pesos[i] / totalPesos;
+        maximoPorcoes.push_back(pesoRelativo * r);
+        totalMaximoPorcoes += maximoPorcoes[i];
+    }
+
+    for (long int i = 0; i < r - totalMaximoPorcoes; i++) {
+        int randomIndex = rand() % n;
+        if (porcoesCertas[randomIndex]) {
+            i--;
+        }
+        else {
+            maximoPorcoes[randomIndex]++;
+            porcoesCertas[randomIndex] = true;
+        }
     }
 
     for (long int i = 0; i < n; i++) {
@@ -90,9 +114,6 @@ void junta_threads() {
 void *filosofo(void *id) {
 
     long int i = (long int)id;
-
-    float pesoRelativo = (float)pesos[i] / totalPesos;
-    int maximoPorcoes = pesoRelativo * r;
 
     Garfo primeiro_garfo;
     Garfo segundo_garfo;
@@ -135,7 +156,7 @@ void *filosofo(void *id) {
                 cout << id << ": faltam " << porcoesFaltando << "\n";
                 printMutex.unlock();
 
-                if (porcoesFaltando <= 0 || porcoes[i] == maximoPorcoes) {
+                if (porcoesFaltando <= 0 || porcoes[i] == maximoPorcoes[i]) {
                     acabou = true;
 
                     printMutex.lock();
