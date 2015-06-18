@@ -21,9 +21,12 @@ Obs:
 ================================================================================
 
 MODIFICAÇÕES:
-Implementei um outro pseudo_codigo do monitor: que tenta pegar os dois garfos de uma vez.
-Mudei de <conditional_variable> e <mutex> para pthread_cont e pthread_mutex.
-Está funcionando, para o uniforme, os filosofos comem porcoes parecidas de comida, mas verificar r ainda não está funcionando muito bem. Eles comem mais que r porções. Tentei destruir as threads, mas fica semáforo preso.
+- Implementei um outro pseudo_codigo do monitor: que tenta pegar os dois garfos
+  de uma vez.
+- Mudei de <conditional_variable> e <mutex> para pthread_cont e pthread_mutex.
+- Está funcionando, para o uniforme, os filosofos comem porcoes parecidas de
+  comida, mas verificar r ainda não está funcionando muito bem. Eles comem mais
+  que r porções. Tentei destruir as threads, mas fica semáforo preso.
 
 ================================================================================
 
@@ -40,3 +43,13 @@ Versão do Daniel:
   comer (proporcionalmente ao seu peso). Se algum filósofo comer demais, ele
   para de comer. Assim, garantimos que no final cada filósofo comeu
   proporcionalmente ao seu peso.
+
+================================================================================
+
+MODIFICAÇÕES:
+- Quando não for possível ler o arquivo, as informações são lidas da STDIN. Isso
+  é temporário, apenas para facilitar o desenvolvimento no mac :)
+- A principio a versão uniforme está funcionando, e a com pesos também. Ambas
+  usam a lógica do Daniel (escrita acima), mas vou confirmar com ele amanhã se
+  ela está ok.
+- Já cuidamos de alguns casos patológicos.
