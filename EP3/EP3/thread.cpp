@@ -10,18 +10,24 @@
 
 using namespace std;
 
+
 vector<pthread_t> filosofos;
 vector<int> porcoes;
-int n; // quantidade de filosofos
 vector<int> pesos;
-int r; // quantidade de porcoes
-int porcoesFaltando;
-mutex comeMutex;
-bool deve_ser_uniforme; // se true os filosofos comem porcoes uniformes, se
-                        // false
-                        // os filosofos comem porcoes proporcionais a seu peso.
 Garfo *garfos;
+
+int n;                  // quantidade de filosofos
+int r;                  // quantidade de porcoes
+bool deve_ser_uniforme; // se true os filosofos comem porcoes uniformes, se
+                        // false os filosofos comem porcoes proporcionais a seu
+                        // peso.
+
+int totalPesos;
+int porcoesFaltando;
+
+mutex comeMutex;
 mutex printMutex;
+
 
 void *filosofo(void *id);
 void come(long int i);
@@ -51,10 +57,12 @@ void cria_threads() {
     garfos = (Garfo *)malloc(sizeof(Garfo) * n);
     filosofos.clear();
     porcoes.clear();
+    totalPesos = 0;
 
     for (long int i = 0; i < n; i++) {
         porcoes.push_back(0);
         garfos[i] = Garfo();
+        totalPesos += pesos[i];
     }
 
     for (long int i = 0; i < n; i++) {
@@ -82,6 +90,9 @@ void junta_threads() {
 void *filosofo(void *id) {
 
     long int i = (long int)id;
+
+    float pesoRelativo = (float)pesos[i] / totalPesos;
+    int maximoPorcoes = pesoRelativo * r;
 
     Garfo primeiro_garfo;
     Garfo segundo_garfo;
@@ -124,7 +135,7 @@ void *filosofo(void *id) {
                 cout << id << ": faltam " << porcoesFaltando << "\n";
                 printMutex.unlock();
 
-                if (porcoesFaltando <= 0) {
+                if (porcoesFaltando <= 0 || porcoes[i] == maximoPorcoes) {
                     acabou = true;
 
                     printMutex.lock();
