@@ -97,6 +97,8 @@ void cria_threads() {
 
         filosofos.push_back(f);
     }
+
+    free(porcoesCertas);
 }
 
 
@@ -108,6 +110,8 @@ void junta_threads() {
     for (int i = 0; i < n; i++) {
         printf("O filosofo %d comeu %d porções.\n", i, porcoes[i]);
     }
+
+    free(garfos);
 }
 
 
