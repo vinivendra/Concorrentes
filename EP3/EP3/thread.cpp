@@ -160,12 +160,20 @@ void *filosofo(void *id) {
                 cout << id << ": faltam " << porcoesFaltando << "\n";
                 printMutex.unlock();
 
-                if (porcoesFaltando <= 0 || porcoes[i] == maximoPorcoes[i]) {
+                if (porcoesFaltando <= 0) {
                     acabou = true;
 
                     printMutex.lock();
-                    cout << id << ": acabou "
+                    cout << id << ": acabou a comida!"
                          << "\n";
+                    printMutex.unlock();
+                }
+                else if (!deve_ser_uniforme && porcoes[i] == maximoPorcoes[i]) {
+                    acabou = true;
+
+                    printMutex.lock();
+                    cout << id << ": acabaram minhas porções!"
+                    << "\n";
                     printMutex.unlock();
                 }
 

@@ -4,18 +4,17 @@
 
 void wait(variavel_condicional *cv);
 void signal(variavel_condicional *cv);
-bool busy(variavel_condicional *cv);
 
 
 Garfo::Garfo() {
     this->cv.m = new mutex();
     this->cv.privateMutex = new mutex();
-    this->cv.busy = 0;
 }
 
 
 void Garfo::pega() {
     cv.m->lock();
+    ocupado++;
     wait(&cv);
     cv.m->unlock();
 }
@@ -23,6 +22,7 @@ void Garfo::pega() {
 
 void Garfo::devolve() {
     cv.m->lock();
+    ocupado--;
     signal(&cv);
     cv.m->unlock();
 }
@@ -31,11 +31,12 @@ void Garfo::devolve() {
 bool Garfo::tenta() {
     cv.m->lock();
 
-    if (busy(&cv)) {
+    if (ocupado) {
         cv.m->unlock();
         return false;
     }
 
+    ocupado++;
     wait(&cv);
     cv.m->unlock();
     return true;
@@ -44,25 +45,15 @@ bool Garfo::tenta() {
 
 void wait(variavel_condicional *cv) {
 
-    cv->busy++;
     cv->m->unlock();
-
     cv->privateMutex->lock();
-
     cv->m->lock();
 }
 
 
 void signal(variavel_condicional *cv) {
 
-    cv->busy--;
     cv->privateMutex->unlock();
-}
-
-
-bool busy(variavel_condicional *cv) {
-
-    return cv->busy;
 }
 
 /* Pseudo código do monitor sem levar em considereção os pesos dos filosofos:
