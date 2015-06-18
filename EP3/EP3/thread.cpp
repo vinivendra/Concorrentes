@@ -3,6 +3,7 @@
 #include <vector>
 #include <mutex>
 #include <unistd.h>
+#include <time.h>
 
 #include "thread.h"
 #include "monitor.h"
@@ -10,6 +11,8 @@
 
 using namespace std;
 
+
+clock_t begin_time;
 
 vector<pthread_t> filosofos;
 vector<int> porcoes;
@@ -55,6 +58,8 @@ void set_deve_ser_uniforme(bool u) {
 
 void cria_threads() {
 
+    begin_time = clock();
+
     int totalMaximoPorcoes = 0;
 
     garfos = (Garfo *)malloc(sizeof(Garfo) * n);
@@ -82,8 +87,7 @@ void cria_threads() {
         int randomIndex = rand() % n;
         if (porcoesCertas[randomIndex]) {
             i--;
-        }
-        else {
+        } else {
             maximoPorcoes[randomIndex]++;
             porcoesCertas[randomIndex] = true;
         }
@@ -108,7 +112,7 @@ void junta_threads() {
     }
 
     for (int i = 0; i < n; i++) {
-        printf("O filosofo %d comeu %d porções.\n", i, porcoes[i]);
+        printf("O filosofo %d comeu %d vezes.\n", i, porcoes[i]);
     }
 
     free(garfos);
@@ -136,44 +140,21 @@ void *filosofo(void *id) {
     while (!acabou) {
         pensa();
 
-        printMutex.lock();
-        cout << id << ": pensa\n";
-        printMutex.unlock();
-
         while (true) {
             primeiro_garfo.pega();
 
-            printMutex.lock();
-            cout << id << ": pega o " << i << "\n";
-            printMutex.unlock();
-
             if (segundo_garfo.tenta()) {
-                printMutex.lock();
-                cout << id << ": pega o " << (i + 1) % n << "\n";
-                printMutex.unlock();
 
                 come(i);
 
-                printMutex.lock();
-                cout << id << ": come "
-                     << "\n";
-                cout << id << ": faltam " << porcoesFaltando << "\n";
-                printMutex.unlock();
-
-                if (porcoesFaltando <= 0) {
+                if (porcoesFaltando <= 0
+                    || (!deve_ser_uniforme && porcoes[i] == maximoPorcoes[i])) {
                     acabou = true;
 
                     printMutex.lock();
-                    cout << id << ": acabou a comida!"
-                         << "\n";
-                    printMutex.unlock();
-                }
-                else if (!deve_ser_uniforme && porcoes[i] == maximoPorcoes[i]) {
-                    acabou = true;
-
-                    printMutex.lock();
-                    cout << id << ": acabaram minhas porções!"
-                    << "\n";
+                    printf("O filósofo número %ld terminou de comer.\n", i);
+                    printf("Ele terminou no instante %f.\n",
+                           float(clock() - begin_time) / CLOCKS_PER_SEC);
                     printMutex.unlock();
                 }
 
@@ -182,10 +163,6 @@ void *filosofo(void *id) {
 
                 break;
             } else {
-                printMutex.lock();
-                cout << id << ": não rolou; devolve o " << (i + 1) % n << "\n";
-                printMutex.unlock();
-
                 primeiro_garfo.devolve();
             }
         }
@@ -198,6 +175,14 @@ void *filosofo(void *id) {
 void come(long int i) {
     comeMutex.lock();
     if (porcoesFaltando > 0) {
+        printMutex.lock();
+        printf("O filósofo número %ld conseguiu pegar os dois "
+               "garfos.\n",
+               i);
+        printf("Ele vai comer no instante %f.\n",
+               float(clock() - begin_time) / CLOCKS_PER_SEC);
+        printMutex.unlock();
+
         porcoesFaltando--;
         porcoes[i]++;
     }

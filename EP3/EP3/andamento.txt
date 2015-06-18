@@ -53,13 +53,14 @@ MODIFICAÇÕES:
   usam a lógica do Daniel (escrita acima), mas vou confirmar com ele amanhã se
   ela está ok.
 - Já cuidamos de alguns casos patológicos.
+- As impressões na saída padrão estão ok, inclusive a contagem de tempo.
 
-- Confirmar com o Daniel: se pode mesmo limitar as porcoes de acordo com o peso;
+
++ Confirmar com o Daniel: se pode mesmo limitar as porcoes de acordo com o peso;
                           se pode usar o monitor do jeito que está.
 
 
 
 Por fazer:
 - Testar mais casos patológicos: valores muito grandes ou pequenos de n e r, etc
-- Colocar um contador de tempo no programa
-- Imprimir a saída de acordo com o que está no enunciado
+                                 testar com 500 filosofos quebra
