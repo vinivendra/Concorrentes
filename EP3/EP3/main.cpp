@@ -17,8 +17,7 @@ int main(int argc, const char *argv[]) {
     vector<int> pesos;
     int r;          // Quantidade de porcoes.
     bool u = true;  // Filosofos comem uma quantidade uniforme de porcoes
-    bool p = false; // Filosofos comem uma quantidade de porcoes proporcional a
-                    // seu peso.
+
     FILE *infile;
 
     if (argc != 4) {
@@ -32,7 +31,6 @@ int main(int argc, const char *argv[]) {
         set_n(n);
         for (i = 0; i < n; i++)
             if (scanf("%d", &aux) != EOF) {
-                pesos.push_back(aux);
                 set_peso(aux);
             }
 
@@ -44,7 +42,6 @@ int main(int argc, const char *argv[]) {
         set_n(n);
         for (i = 0; i < n; i++)
             if (fscanf(infile, "%d", &aux) != EOF) {
-                pesos.push_back(aux);
                 set_peso(aux);
             }
     }
@@ -56,10 +53,8 @@ int main(int argc, const char *argv[]) {
 
     if (argv[3][0] == 'U' || argv[3][0] == 'u') {
         u = true;
-        p = false;
         set_deve_ser_uniforme(true);
     } else if (argv[3][0] == 'P' || argv[3][0] == 'p') {
-        p = true;
         u = false;
         set_deve_ser_uniforme(false);
     }
@@ -68,7 +63,6 @@ int main(int argc, const char *argv[]) {
     cout << "Quantidade de pesos: " << int(pesos.size()) << ".\n";
     cout << "R = " << r << ".\n";
     cout << "U = " << u << ".\n";
-    cout << "P = " << p << ".\n";
 
     for (i = 0; i < int(pesos.size()); i++)
         cout << "Peso " << i << " = " << pesos[i] << ".\n";

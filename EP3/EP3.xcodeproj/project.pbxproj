@@ -54,10 +54,10 @@
 				24A68EAD1B2B186700217EA6 /* Products */,
 				24B43C6A1B3064D100A59F88 /* andamento.txt */,
 				24B43C721B306BCF00A59F88 /* Enunciado.pdf */,
-				24C6D8781B30D90700B15E98 /* monitor.h */,
 				24C6D8791B30DCFC00B15E98 /* entrada.txt */,
 				24B43C6B1B3064D100A59F88 /* main.cpp */,
 				24B43C6C1B3064D100A59F88 /* monitor.cpp */,
+				24C6D8781B30D90700B15E98 /* monitor.h */,
 				24B43C6D1B3064D100A59F88 /* thread.cpp */,
 				24B43C6E1B3064D100A59F88 /* thread.h */,
 			);

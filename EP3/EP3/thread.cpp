@@ -53,14 +53,17 @@ void cria_threads() {
     porcoes.clear();
 
     for (long int i = 0; i < n; i++) {
+        porcoes.push_back(0);
+        garfos[i] = Garfo();
+    }
+
+    for (long int i = 0; i < n; i++) {
         pthread_t f;
 
         if (pthread_create(&f, nullptr, filosofo, (void *)i))
             printf("\n ERROR creating thread %ld\n", i + 1);
 
         filosofos.push_back(f);
-        porcoes.push_back(0);
-        garfos[i] = Garfo();
     }
 }
 
