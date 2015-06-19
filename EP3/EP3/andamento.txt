@@ -72,3 +72,5 @@ MODIFICAÇÕES:
 - O programa agora funciona em quase todos os casos para 500 filósofos também.
   Se esse problema ficar muito sério no linux, talvez a solução seja passar tudo
   para C.
+- O monitor agora usa uma funcao empty() em fez da variavel ocupado, pra seguir
+  os padroes do enunciado.

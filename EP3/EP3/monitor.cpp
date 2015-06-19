@@ -4,12 +4,11 @@
 
 void wait(garfo *g);
 void signal(garfo *g);
-
+bool empty(garfo *g);
 
 
 void pega(garfo *g) {
     g->m.lock();
-    g->ocupado++;
     wait(g);
     g->m.unlock();
 }
@@ -17,7 +16,6 @@ void pega(garfo *g) {
 
 void devolve(garfo *g) {
     g->m.lock();
-    g->ocupado--;
     signal(g);
     g->m.unlock();
 }
@@ -26,12 +24,11 @@ void devolve(garfo *g) {
 bool tenta(garfo *g) {
     g->m.lock();
 
-    if (g->ocupado) {
+    if (!empty(g)) {
         g->m.unlock();
         return false;
     }
 
-    g->ocupado++;
     wait(g);
 
     g->m.unlock();
@@ -40,7 +37,7 @@ bool tenta(garfo *g) {
 
 
 void wait(garfo *g) {
-
+    g->ocupado++;
     g->m.unlock();
     g->privateMutex.lock();
     g->m.lock();
@@ -48,7 +45,12 @@ void wait(garfo *g) {
 
 
 void signal(garfo *g) {
-
+    g->ocupado--;
     g->privateMutex.unlock();
+}
+
+
+bool empty(garfo *g) {
+    return !g->ocupado;
 }
 
