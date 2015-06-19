@@ -64,11 +64,11 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "2000"
+            argument = "10000"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "u"
+            argument = "p"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

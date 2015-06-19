@@ -8,20 +8,14 @@
 using namespace std;
 
 
-typedef struct variavel_condicional {
-    mutex *privateMutex;
-    mutex *m;
-} variavel_condicional;
-
-
-class Garfo {
-    variavel_condicional cv;
+struct garfo {
+    mutex privateMutex;
+    mutex m;
     int ocupado = false;
-
-public:
-    Garfo();
-
-    void pega();
-    void devolve();
-    bool tenta();
 };
+
+
+void pega(garfo *g);
+void devolve(garfo *g);
+bool tenta(garfo *g);
+

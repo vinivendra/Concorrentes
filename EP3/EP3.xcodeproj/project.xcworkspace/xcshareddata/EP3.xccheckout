@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>3434EB22-2F2A-475C-B819-09489EA4C63E</string>
 	<key>IDESourceControlProjectName</key>
-	<string>EP3</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>2CC3039F0F03ECC6864F8B20B3D412C7071D51E5</key>
 		<string>github.com:vinivendra/Concorrentes.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>EP3/EP3.xcodeproj</string>
+	<string>EP3/EP3.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>2CC3039F0F03ECC6864F8B20B3D412C7071D51E5</key>

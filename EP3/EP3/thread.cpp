@@ -15,10 +15,10 @@ using namespace std;
 clock_t begin_time;
 
 vector<pthread_t> filosofos;
-vector<int> porcoes;
-vector<int> pesos;
-vector<int> maximoPorcoes;
-Garfo *garfos;
+int *porcoes;
+int *pesos = NULL;
+int *maximoPorcoes;
+vector<garfo> garfos;
 
 int n;                  // quantidade de filosofos
 int r;                  // quantidade de porcoes
@@ -26,6 +26,7 @@ bool deve_ser_uniforme; // se true os filosofos comem porcoes uniformes, se
                         // false os filosofos comem porcoes proporcionais a seu
                         // peso.
 
+int pesoCounter = 0;
 int totalPesos;
 int porcoesFaltando;
 
@@ -43,7 +44,11 @@ void set_n(int novo) {
 }
 
 void set_peso(int peso) {
-    pesos.push_back(peso);
+    if (pesos == NULL) {
+        pesos = (int *)malloc(sizeof(int) * n);
+    }
+    pesos[pesoCounter] = peso;
+    pesoCounter++;
 }
 
 void set_porcoes(int p) {
@@ -62,16 +67,18 @@ void cria_threads() {
 
     int totalMaximoPorcoes = 0;
 
-    garfos = (Garfo *)malloc(sizeof(Garfo) * n);
-    filosofos.clear();
-    porcoes.clear();
     totalPesos = 0;
+
+    garfos = vector<garfo>(n);
+
+    porcoes = (int *)malloc(sizeof(int) * n);
+    maximoPorcoes = (int *)malloc(sizeof(int) * n);
 
     bool *porcoesCertas = (bool *)malloc(sizeof(bool));
 
     for (long int i = 0; i < n; i++) {
-        porcoes.push_back(0);
-        garfos[i] = Garfo();
+        porcoes[i] = 0;
+
         totalPesos += pesos[i];
     }
 
@@ -79,7 +86,7 @@ void cria_threads() {
         porcoesCertas[i] = false;
 
         float pesoRelativo = (float)pesos[i] / totalPesos;
-        maximoPorcoes.push_back(pesoRelativo * r);
+        maximoPorcoes[i] = pesoRelativo * r;
         totalMaximoPorcoes += maximoPorcoes[i];
     }
 
@@ -115,7 +122,9 @@ void junta_threads() {
         printf("O filosofo %d comeu %d vezes.\n", i, porcoes[i]);
     }
 
-    free(garfos);
+    free(porcoes);
+    free(pesos);
+    free(maximoPorcoes);
 }
 
 
@@ -123,15 +132,15 @@ void *filosofo(void *id) {
 
     long int i = (long int)id;
 
-    Garfo primeiro_garfo;
-    Garfo segundo_garfo;
+    garfo *primeiro_garfo;
+    garfo *segundo_garfo;
 
     if (i % 2) {
-        primeiro_garfo = garfos[i];
-        segundo_garfo = garfos[(i + 1) % n];
+        primeiro_garfo = &garfos[i];
+        segundo_garfo = &garfos[(i + 1) % n];
     } else {
-        primeiro_garfo = garfos[(i + 1) % n];
-        segundo_garfo = garfos[i];
+        primeiro_garfo = &garfos[(i + 1) % n];
+        segundo_garfo = &garfos[i];
     }
 
     bool acabou = false;
@@ -141,9 +150,9 @@ void *filosofo(void *id) {
         pensa();
 
         while (true) {
-            primeiro_garfo.pega();
+            pega(primeiro_garfo);
 
-            if (segundo_garfo.tenta()) {
+            if (tenta(segundo_garfo)) {
 
                 come(i);
 
@@ -158,12 +167,12 @@ void *filosofo(void *id) {
                     printMutex.unlock();
                 }
 
-                primeiro_garfo.devolve();
-                segundo_garfo.devolve();
+                devolve(primeiro_garfo);
+                devolve(segundo_garfo);
 
                 break;
             } else {
-                primeiro_garfo.devolve();
+                devolve(primeiro_garfo);
             }
         }
     }

@@ -63,4 +63,12 @@ MODIFICAÇÕES:
 
 Por fazer:
 - Testar mais casos patológicos: valores muito grandes ou pequenos de n e r, etc
-                                 testar com 500 filosofos quebra
+                               - testar com 500 filosofos quebra
+
+================================================================================
+MODIFICAÇÕES:
+- Evitando um bug na manipulação nativa de ponteiros do C++: agora, fazemos essa
+  parte no estilo C.
+- O programa agora funciona em quase todos os casos para 500 filósofos também.
+  Se esse problema ficar muito sério no linux, talvez a solução seja passar tudo
+  para C.
