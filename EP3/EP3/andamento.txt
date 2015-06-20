@@ -64,3 +64,14 @@ MODIFICAÇÕES:
 Por fazer:
 - Testar mais casos patológicos: valores muito grandes ou pequenos de n e r, etc
                                  testar com 500 filosofos quebra
+                                 
+                                 
+=================================================================================
+-> Arrumado o problema por que quebrava com 500 filosofos.
+
+-> Testes com 500 filosofos não quebra mais, mas só são criadas 379 threads, as 
+threads 380 a 500 não são criadas, retorna erro no pthread_create.
+
+
+ 
+
