@@ -60,6 +60,10 @@ void cria_threads() {
 
     begin_time = clock();
 
+    cout << "Quantidade de pesos: " << int(pesos.size()) << ".\n";
+    for (int i = 0; i < int(pesos.size()); i++)
+        cout << "Peso " << i << " = " << pesos[i] << ".\n";
+
     int totalMaximoPorcoes = 0;
 
     garfos = (Garfo *)malloc(sizeof(Garfo) * n);
@@ -67,7 +71,7 @@ void cria_threads() {
     porcoes.clear();
     totalPesos = 0;
 
-    bool *porcoesCertas = (bool *)malloc(sizeof(bool));
+    bool *porcoesCertas = (bool *)malloc(sizeof(bool) * n);
 
     for (long int i = 0; i < n; i++) {
         porcoes.push_back(0);
@@ -92,6 +96,9 @@ void cria_threads() {
             porcoesCertas[randomIndex] = true;
         }
     }
+
+    for (int i = 0; i < int(maximoPorcoes.size()); i++)
+        cout << "porcoes " << i << " = " << maximoPorcoes[i] << ".\n";
 
     for (long int i = 0; i < n; i++) {
         pthread_t f;
@@ -148,7 +155,7 @@ void *filosofo(void *id) {
                 come(i);
 
                 if (porcoesFaltando <= 0
-                    || (!deve_ser_uniforme && porcoes[i] == maximoPorcoes[i])) {
+                    || (!deve_ser_uniforme && porcoes[i] >= maximoPorcoes[i])) {
                     acabou = true;
 
                     printMutex.lock();
