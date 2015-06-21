@@ -28,13 +28,15 @@ bool deve_ser_uniforme; // se true os filosofos comem porcoes uniformes, se
 
 int totalPesos;
 int porcoesFaltando;
+int acabou;
+
 
 mutex comeMutex;
 mutex printMutex;
 
 
 void *filosofo(void *id);
-void come(long int i);
+bool come(long int i);
 void pensa();
 
 
@@ -60,16 +62,13 @@ void cria_threads() {
 
     begin_time = clock();
 
-    cout << "Quantidade de pesos: " << int(pesos.size()) << ".\n";
-    for (int i = 0; i < int(pesos.size()); i++)
-        cout << "Peso " << i << " = " << pesos[i] << ".\n";
-
     int totalMaximoPorcoes = 0;
 
     garfos = (Garfo *)malloc(sizeof(Garfo) * n);
     filosofos.clear();
     porcoes.clear();
     totalPesos = 0;
+    acabou = 0;
 
     bool *porcoesCertas = (bool *)malloc(sizeof(bool) * n);
 
@@ -97,14 +96,16 @@ void cria_threads() {
         }
     }
 
-    for (int i = 0; i < int(maximoPorcoes.size()); i++)
-        cout << "porcoes " << i << " = " << maximoPorcoes[i] << ".\n";
-
     for (long int i = 0; i < n; i++) {
         pthread_t f;
 
-        if (pthread_create(&f, nullptr, filosofo, (void *)i))
+        if (pthread_create(&f, nullptr, filosofo, (void *)i)) {
             printf("\n ERROR creating thread %ld\n", i + 1);
+            if (i+1 > 380) {
+                printf("Não é possível criar mais threads\n");
+            }
+            exit(1);
+        }
 
         filosofos.push_back(f);
     }
@@ -121,7 +122,7 @@ void junta_threads() {
     for (int i = 0; i < n; i++) {
         printf("O filosofo %d comeu %d vezes.\n", i, porcoes[i]);
     }
-
+    
     free(garfos);
 }
 
@@ -141,36 +142,40 @@ void *filosofo(void *id) {
         segundo_garfo = garfos[i];
     }
 
-    bool acabou = false;
+    bool cheio = false;
+    bool comeu = false;
 
-
-    while (!acabou) {
+    while (acabou < n) {
         pensa();
 
-        while (true) {
-            primeiro_garfo.pega();
+        if (!cheio) {
+            while (true) {
+                primeiro_garfo.pega();
 
-            if (segundo_garfo.tenta()) {
-
-                come(i);
-
-                if (porcoesFaltando <= 0
-                    || (!deve_ser_uniforme && porcoes[i] >= maximoPorcoes[i])) {
-                    acabou = true;
-
+                if (segundo_garfo.tenta()) {
+                    comeu = come(i);
+                    
                     printMutex.lock();
-                    printf("O filósofo número %ld terminou de comer.\n", i);
-                    printf("Ele terminou no instante %f.\n",
-                           float(clock() - begin_time) / CLOCKS_PER_SEC);
+                    if (porcoesFaltando <= 0
+                        || (!deve_ser_uniforme && porcoes[i] >= maximoPorcoes[i])) {
+                        acabou++;
+                        cheio = true;
+                    }
+
+                    if (porcoesFaltando >= 0 && comeu) {
+                        printf("O filósofo número %ld terminou de comer.\n", i);
+                        printf("Ele terminou no instante %f.\n",
+                        float(clock() - begin_time) / CLOCKS_PER_SEC);                           
+                    }                   
                     printMutex.unlock();
+            
+                    primeiro_garfo.devolve();
+                    segundo_garfo.devolve();
+
+                    break;
+                } else {
+                    primeiro_garfo.devolve();
                 }
-
-                primeiro_garfo.devolve();
-                segundo_garfo.devolve();
-
-                break;
-            } else {
-                primeiro_garfo.devolve();
             }
         }
     }
@@ -179,7 +184,9 @@ void *filosofo(void *id) {
 }
 
 
-void come(long int i) {
+bool come(long int i) {
+    bool comeu = false;
+
     comeMutex.lock();
     if (porcoesFaltando > 0) {
         printMutex.lock();
@@ -192,8 +199,14 @@ void come(long int i) {
 
         porcoesFaltando--;
         porcoes[i]++;
+
+        comeu = true;
     }
     comeMutex.unlock();
+
+    usleep(10000);
+
+    return comeu;
 }
 
 void pensa() {
