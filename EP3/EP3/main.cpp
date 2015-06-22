@@ -16,7 +16,6 @@ int main(int argc, const char *argv[]) {
     int aux;
     vector<int> pesos;
     int r;          // Quantidade de porcoes.
-    bool u = true;  // Filosofos comem uma quantidade uniforme de porcoes
 
     FILE *infile;
 
@@ -33,9 +32,6 @@ int main(int argc, const char *argv[]) {
             if (scanf("%d", &aux) != EOF) {
                 set_peso(aux);
             }
-
-        //        cout << "Não consegui abrir o arquivo " << argv[1] << "\n";
-        //        return -2;
     }
     else {
         fscanf(infile, "%d", &n);
@@ -52,20 +48,10 @@ int main(int argc, const char *argv[]) {
     set_porcoes(r);
 
     if (argv[3][0] == 'U' || argv[3][0] == 'u') {
-        u = true;
         set_deve_ser_uniforme(true);
     } else if (argv[3][0] == 'P' || argv[3][0] == 'p') {
-        u = false;
         set_deve_ser_uniforme(false);
     }
-
-    cout << "N = " << n << ".\n";
-    cout << "Quantidade de pesos: " << int(pesos.size()) << ".\n";
-    cout << "R = " << r << ".\n";
-    cout << "U = " << u << ".\n";
-
-    for (i = 0; i < int(pesos.size()); i++)
-        cout << "Peso " << i << " = " << pesos[i] << ".\n";
 
     cria_threads();
     junta_threads();

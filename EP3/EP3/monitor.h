@@ -1,5 +1,3 @@
-
-
 #include <pthread.h>
 #include <iostream>
 #include <mutex>
@@ -14,8 +12,6 @@ struct garfo {
     int ocupado = false;
 };
 
-
-void pega(garfo *g);
-void devolve(garfo *g);
-bool tenta(garfo *g);
-
+void pega(garfo *cv);
+void devolve(garfo *cv);
+bool tenta(garfo *cv);

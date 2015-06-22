@@ -1,56 +1,54 @@
-
 #include "monitor.h"
 
 
-void wait(garfo *g);
-void signal(garfo *g);
-bool empty(garfo *g);
+void wait(garfo *cv);
+void signal(garfo *cv);
+bool empty(garfo *cv);
 
 
-void pega(garfo *g) {
-    g->m.lock();
-    wait(g);
-    g->m.unlock();
+void pega(garfo *cv) {
+    cv->m.lock();
+    wait(cv);
+    cv->m.unlock();
 }
 
 
-void devolve(garfo *g) {
-    g->m.lock();
-    signal(g);
-    g->m.unlock();
+void devolve(garfo *cv) {
+    cv->m.lock();
+    signal(cv);
+    cv->m.unlock();
 }
 
 
-bool tenta(garfo *g) {
-    g->m.lock();
+bool tenta(garfo *cv) {
+    cv->m.lock();
 
-    if (!empty(g)) {
-        g->m.unlock();
+    if (!empty(cv)) {
+        cv->m.unlock();
         return false;
     }
 
-    wait(g);
+    wait(cv);
 
-    g->m.unlock();
+    cv->m.unlock();
     return true;
 }
 
 
-void wait(garfo *g) {
-    g->ocupado++;
-    g->m.unlock();
-    g->privateMutex.lock();
-    g->m.lock();
+void wait(garfo *cv) {
+    cv->ocupado++;
+    cv->m.unlock();
+    cv->privateMutex.lock();
+    cv->m.lock();
 }
 
 
-void signal(garfo *g) {
-    g->ocupado--;
-    g->privateMutex.unlock();
+void signal(garfo *cv) {
+    cv->ocupado--;
+    cv->privateMutex.unlock();
 }
 
 
-bool empty(garfo *g) {
-    return !g->ocupado;
+bool empty(garfo *cv) {
+    return !cv->ocupado;
 }
-

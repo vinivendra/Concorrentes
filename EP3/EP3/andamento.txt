@@ -74,3 +74,12 @@ MODIFICAÇÕES:
   para C.
 - O monitor agora usa uma funcao empty() em fez da variavel ocupado, pra seguir
   os padroes do enunciado.
+                                 
+=================================================================================
+-> Arrumado o problema por que quebrava com 500 filosofos.
+
+-> Testes com 500 filosofos não quebra mais, mas só são criadas 379 threads, as 
+threads 380 a 500 não são criadas, retorna erro no pthread_create.
+
+
+
