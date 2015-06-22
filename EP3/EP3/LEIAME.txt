@@ -11,7 +11,7 @@ Essencialmente, para este programa, cada garfo é um monitor. O garfo controla q
 
     O mutex 'm' funciona de forma semelhante ao visto em sala de aula: ele é usado pelas funções 'pega', 'devolve' e 'tenta', que são as funcoes de interface do monitor com o mundo externo, para controlar a exclusão mútua dentro das funções do monitor. Este mutex é travado sempre que uma função do monitor precisa ser chamada e destravado sempre que ela retorna.
     O mutex 'privateMutex' é o modo como o monitor em si funciona. É ele que será travado quando o monitor estiver em uso e destravado quando foi liberado, e é ele o responsável por fazer o processo em espera dormir. Como temos no máximo um processo em espera (o filósofo que não está comendo com este garfo no momento), não precisamos de mais de um mutex.
-    O inteiro 'ocupado' serve para contarmos quantos filósofos estao atualmente querendo acessar ou acessando o garfo. Isso serve para podermos usar implementar a função 'tenta', principalmente.
+    O inteiro 'ocupado' serve para contarmos quantos f ilósofos estao atualmente querendo acessar ou acessando o garfo. Isso serve para podermos usar implementar a função 'tenta', principalmente.
 
 As funções expostas pelos garfos par os filósofos procuram ter sentido semântico, e ainda assim são funções muito simples. A função 'pega' vai esperar o garfo em questão ser liberado e, quando for, vai pegá-lo. A 'devolve' vai devolver o garfo quando estiver em uso. A 'tenta' vai olhar para o garfo e ver se ele está ou não ocupado. Caso estiver, ela não faz nada mas avisa quem chamou; caso contrário, ela pega o garfo.
 
